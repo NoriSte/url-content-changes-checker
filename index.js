@@ -1,11 +1,16 @@
 const checkChanges = require("./check-changes");
 
-checkChanges([{
-    url: 'https://www.unixtimestamp.com/',
-    baseFileName: "unixtimestamp"
-}
-, {
+checkChanges([
+  {
     url: 'http://backoffice2.staging.aws.conio.com/api/utilities/schema',
-    baseFileName: "backoffice2-graphql-schema-2"
-}
-]);
+    dir: "backoffice2-graphql-schema-2",
+    fileNamePrefix: "schema",
+  },
+  {
+    url: 'https://mobile.conio.com/api/v1.0/price/btc/last',
+    dir: "btc",
+    fileNamePrefix: "fiat",
+  }
+], {
+  // rootDir: "differences"
+});

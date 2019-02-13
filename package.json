@@ -4,7 +4,7 @@
   "description": "A Node.js script to read and compare a remote resource body",
   "main": "index.js",
   "repository": "https://github.com/NoriSte/url-content-changes-checker.git",
-  "author": "Stefano Magni <nori.ste.magni@gmail.com>",
+  "author": "Stefano Magni <nori.ste.magni@gmail.com> (https://github.com/NoriSte)",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",

@@ -1,0 +1,19 @@
+{
+  "name": "url-content-changes-checker",
+  "version": "1.0.0",
+  "description": "A Node.js script to read and compare a remote resource body",
+  "main": "index.js",
+  "repository": "https://github.com/NoriSte/url-content-changes-checker.git",
+  "author": "Stefano Magni <nori.ste.magni@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "diff": "^4.0.1"
+  },
+  "scripts": {
+    "dev": "npx nodemon index.js"
+  },
+  "nodemonConfig": {
+    "ignore": ["*.html", "*.json"]
+  }
+}

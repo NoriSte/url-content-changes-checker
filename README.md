@@ -56,7 +56,7 @@ history
   - `url`: the utl to be fetched
   - `dir`: the directory where the different versions of the content are stored
   - `fileNamePrefix`: the prefix for the version files (default: `item`)
-  - `resourceReader`: a custom resource fetcher (`Axios.get` is be used by default) that must returns a Promise resolving with a `{data}` object
+  - `resourceReader`: a custom resource fetcher (`Axios.get` is used by default) that receives the url and must returns a Promise resolving with a `{data}` object
 - `options`
   - `rootDir`: the dir where **every** file is persisted (default: `history`)
 

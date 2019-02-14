@@ -1,6 +1,6 @@
 {
   "name": "url-content-changes-checker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Node.js script to read and compare a remote resource body",
   "main": "index.js",
   "repository": "https://github.com/NoriSte/url-content-changes-checker.git",

@@ -68,5 +68,4 @@ I developed this script because I needed to check some text resources (GraphQL s
 
 # Notes
 
-- it
-  The comparison is based on [jsdiff](https://github.com/kpdecker/jsdiff).
+- The comparison is based on [jsdiff](https://github.com/kpdecker/jsdiff).

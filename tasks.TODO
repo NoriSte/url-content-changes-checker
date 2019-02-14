@@ -1,17 +1,17 @@
 // private notes
 
-- dividere lo script e metterlo a sè
-- importarlo come modulo locale simulando npm
 - scrivere i relativi test testando tutte le opzioni
 - mettere i test in pipeline su github
 - scrivere un readme come si deve controllando gli appunti qui sotto
 
-it uses mkdir
+it creates the directories if missing
 salva html
 non controlla al primo giro
 se i file combaciano non li salva
 
 // @see https://github.com/kpdecker/jsdiff
 stampa solo le differenze
+
+descrivere il file system
 
 - renderlo uno script a sè lanciabile alla mattina su una repo dedicata di conio

@@ -11,9 +11,17 @@
     "diff": "^4.0.1"
   },
   "scripts": {
+    "test": "jest",
     "dev": "npx nodemon index.js"
   },
   "nodemonConfig": {
-    "ignore": ["*.html", "*.json"]
+    "ignore": [
+      "*.html",
+      "*.json"
+    ]
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^1.16.0",
+    "jest": "^24.1.0"
   }
 }

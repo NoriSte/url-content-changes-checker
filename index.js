@@ -1,8 +1,9 @@
-require('colors');
-var Diff = require('diff');
-const execSync = require('child_process').execSync;
-const axios = require('axios');
-const fs = require('fs');
+require("colors");
+var Diff = require("diff");
+const execSync = require("child_process").execSync;
+const axios = require("axios");
+const fs = require("fs");
+const constants = require("./constants");
 
 /**
  * Scrape an online resource and compare it with the latest scrape result
@@ -15,25 +16,29 @@ const fs = require('fs');
  * @param {string} options.rootDir - all the files will be stored in this directory
  * @see https://github.com/axios/axios
  */
-const checkChanges = (list = [], { rootDir = "history"}) => {
+const checkChanges = (list = [], { rootDir = constants.ROOT_DIR } = {}) => {
   // list must be an array
-  if(!Array.isArray(list)) {
+  if (!Array.isArray(list)) {
     list = [list];
   }
 
-  list.forEach(async ({url, dir, fileNamePrefix = "item"}) => {
+  list.forEach(async ({ url, dir, fileNamePrefix = constants.FILE_NAME_PREFIX }) => {
+    const containingDir = `${rootDir}/${dir}`;
 
     // creates the dir if not exists
-    execSync(`mkdir -p ${rootDir}/${dir}`);
+    // @see https://stackoverflow.com/a/48436466/700707
+    !fs.existsSync(containingDir) && fs.mkcontainingDirSync(dir);
 
     // reads all the previous saved files...
-    let files = fs.readdirSync(`./${rootDir}/${dir}/`).filter(name => name.startsWith(fileNamePrefix) && !name.endsWith('.html'));
+    let files = fs
+      .readdirSync(`./${containingDir}/`)
+      .filter(name => name.startsWith(fileNamePrefix) && !name.endsWith(".html"));
     // ... and sort it by name, the goal is to retrieve the latest saved file
     files = files.sort();
 
     let latestContent;
-    if(files.length) {
-      latestContent = String(fs.readFileSync(`${rootDir}/${dir}/${files[files.length - 1]}`));
+    if (files.length) {
+      latestContent = String(fs.readFileSync(`${containingDir}/${files[files.length - 1]}`));
     }
 
     // console.log(await axios.get(url));
@@ -47,41 +52,46 @@ const checkChanges = (list = [], { rootDir = "history"}) => {
     const newFileName = `${rootDir}/${dir}/${fileNamePrefix}-${Date.now()}`;
 
     // saves the file if there isn't a previous one
-    if(!latestContent) {
+    if (!latestContent) {
       fs.writeFileSync(newFileName, newContent);
     } else {
       // compare the files
       // @see https://github.com/kpdecker/jsdiff
       const diff = Diff.diffLines(latestContent, newContent);
 
-      if(diff.length) {
-        let htmlContent = '';
+      if (diff.length) {
+        let htmlContent = "";
         let somethingChanged = false;
 
-        console.log('------------------------');
+        console.log("------------------------");
         process.stderr.write(`${dir}/${fileNamePrefix} (${url})`);
-        console.log('');
-        diff.forEach(function(part){
+        console.log("");
+        diff.forEach(function(part) {
           let isAChange = part.added || part.removed;
           let color;
 
-          if(isAChange) {
+          if (isAChange) {
             somethingChanged = true;
 
-            color = part.added ? 'green' : 'red';
+            color = part.added ? "green" : "red";
 
             // prints a visual
             process.stderr.write(part.value[color]);
           }
 
-          htmlContent += `<span style="background-color:${isAChange ? color : ''};color:${isAChange ? 'white' : ''};">${part.value}</span>`;
+          htmlContent += `<span style="background-color:${isAChange ? color : ""};color:${
+            isAChange ? "white" : ""
+          };">${part.value}</span>`;
         });
 
-        if(somethingChanged) {
+        if (somethingChanged) {
           // saves the new file
           fs.writeFileSync(newFileName, newContent);
           // saves an visual version of the differences
-          fs.writeFileSync(`${newFileName}.html`, `<html><body><pre>${htmlContent}</pre></body></html>`);
+          fs.writeFileSync(
+            `${newFileName}.html`,
+            `<html><body><pre>${htmlContent}</pre></body></html>`
+          );
         } else {
           console.log("Nothing changed");
         }

@@ -1,6 +1,6 @@
-const checkChanges = require("./check-changes");
+const checker = require("./index");
 
-checkChanges([
+checker([
   {
     url: 'http://backoffice2.staging.aws.conio.com/api/utilities/schema',
     dir: "backoffice2-graphql-schema-2",

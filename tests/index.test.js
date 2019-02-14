@@ -1,9 +1,10 @@
 const axios = require("axios");
 const fs = require("fs");
 const axiosMockAdapter = require("axios-mock-adapter");
+const delay = require("timeout-as-promise");
+const rimraf = require("rimraf");
 const checker = require("../index");
 const constants = require("../constants");
-const delay = require("timeout-as-promise");
 
 describe("URL Content Changes Checker tests", () => {
   let axiosMock;
@@ -54,15 +55,13 @@ describe("URL Content Changes Checker tests", () => {
       fileNamePrefix: "schema"
     };
 
-    checker({
-      url: "http://example.com/schema",
-      dir: "example-schema",
-      fileNamePrefix: "schema"
-    });
+    checker(list);
 
     await delay(100); // await the files are flushed
     const files = fs.readdirSync(`${constants.ROOT_DIR}/${list.dir}`);
     expect(files).toEqual(expect.arrayContaining([expect.any(String)]));
+
+    rimraf.sync(constants.ROOT_DIR);
   });
   // test con singola opzione
   // test con multipla opzione

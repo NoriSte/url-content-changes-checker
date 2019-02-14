@@ -152,4 +152,18 @@ describe("URL Content Changes Checker tests", () => {
     };
     expect(() => checker(list)).toThrow();
   });
+
+  it("If present, Should consume the passed callback to read the content", async () => {
+    const list = {
+      url: "http://example.com/schema",
+      dir: "example-schema",
+      resourceReader: jest.fn(() => Promise.resolve(schema1))
+    };
+
+    await runChecker(list);
+
+    const files = fs.readdirSync(`${constants.ROOT_DIR}/${list.dir}`);
+    expect(files).toHaveLength(1);
+    expect(list.resourceReader).toHaveBeenCalledWith(list.url);
+  });
 });

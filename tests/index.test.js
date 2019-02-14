@@ -6,68 +6,150 @@ const rimraf = require("rimraf");
 const checker = require("../index");
 const constants = require("../constants");
 
+const schema1 = `
+type TestSchema {
+  activity_id: Int
+}
+`;
+const schema2 = `
+type TestSchema {
+  activity_uuid: String
+}
+`;
+const json1 = {
+  rows: [["3209.22", 1550130036000]]
+};
+const json2 = {
+  rows: [["3209.23", 1550130036001]]
+};
+
+const runChecker = async (...rest) => {
+  checker(...rest);
+  await delay(10); // to be sure the file system is consistent
+};
+
 describe("URL Content Changes Checker tests", () => {
   let axiosMock;
 
-  beforeAll(() => {
+  beforeEach(() => {
     axiosMock = new axiosMockAdapter(axios);
-    axiosMock.onGet("/http://example.com/schema").reply(
-      200,
-      `
-    schema {
-      query: ActivitySchema
-    }
-
-    type ActivitySchema {
-      activity_id: String
-      activity_type: Int
-      user_id: String
-      input_wallet_ids: [String]
-      output_wallet_ids: [String]
-      vins: [TransactionInputSchema]
-      vouts: [TransactionOutputSchema]
-      address_ids: [String]
-      crypto_amount: BigInt
-      transaction_id: String
-      mining_fee: Int
-      created_at: DateTime
-      ask_id: String
-      bid_id: String
-      currency: String
-      fiat_amount: Int
-      implicit_fees: Float
-      explicit_fees: Float
-      shift: Float
-    }
-
-    `
-    );
   });
 
-  afterAll(() => {
+  afterEach(() => {
     axiosMock.reset();
+    rimraf.sync(constants.ROOT_DIR);
   });
 
   it("Should create the corresponding file system at the first call", async () => {
     const list = {
       url: "http://example.com/schema",
+      dir: "example-schema"
+    };
+    axiosMock.onGet(list.url).reply(200, schema1);
+
+    await runChecker(list);
+
+    const files = fs.readdirSync(`${constants.ROOT_DIR}/${list.dir}`);
+    expect(files).toHaveLength(1);
+  });
+
+  it("Should save two versions of the file if it changes and a HTML version containing the differences", async () => {
+    const list = {
+      url: "http://example.com/schema",
+      dir: "example-schema"
+    };
+
+    axiosMock.onGet(list.url).reply(200, schema1);
+    await runChecker(list);
+
+    axiosMock.onGet(list.url).reply(200, schema2);
+    await runChecker(list);
+
+    const files = fs.readdirSync(`${constants.ROOT_DIR}/${list.dir}`);
+    expect(files).toHaveLength(3);
+    const htmlFiles = files.filter(item => item.endsWith(".html"));
+    expect(htmlFiles).toHaveLength(1);
+  });
+
+  it("Should work with two contents to be checked", async () => {
+    const list = [
+      {
+        url: "http://example.com/schema",
+        dir: "example-schema"
+      },
+      {
+        url: "http://example.com/json",
+        dir: "example-json"
+      }
+    ];
+    axiosMock.onGet(list[0].url).reply(200, schema1);
+    axiosMock.onGet(list[1].url).reply(200, schema2);
+
+    await runChecker(list);
+
+    let files = fs.readdirSync(`${constants.ROOT_DIR}/${list[0].dir}`);
+    expect(files).toHaveLength(1);
+    files = fs.readdirSync(`${constants.ROOT_DIR}/${list[1].dir}`);
+    expect(files).toHaveLength(1);
+  });
+
+  it("Should work with a custom root directory", async () => {
+    const list = {
+      url: "http://example.com/schema",
+      dir: "example-schema"
+    };
+    const options = {
+      rootDir: "archive"
+    };
+    axiosMock.onGet(list.url).reply(200, schema1);
+
+    await runChecker(list, options);
+
+    const files = fs.readdirSync(`${options.rootDir}/${list.dir}`);
+    expect(files).toHaveLength(1);
+    rimraf.sync(options.rootDir);
+  });
+
+  it("Should save the files accordingly to a custom prefix", async () => {
+    const list = {
+      url: "http://example.com/schema",
       dir: "example-schema",
       fileNamePrefix: "schema"
     };
+    axiosMock.onGet(list.url).reply(200, schema1);
 
-    checker(list);
+    await runChecker(list);
 
-    await delay(100); // await the files are flushed
     const files = fs.readdirSync(`${constants.ROOT_DIR}/${list.dir}`);
-    expect(files).toEqual(expect.arrayContaining([expect.any(String)]));
-
-    rimraf.sync(constants.ROOT_DIR);
+    expect(files).toHaveLength(1);
+    expect(files.filter(item => item.startsWith(list.fileNamePrefix))).toHaveLength(1);
   });
-  // test con singola opzione
-  // test con multipla opzione
-  // test con diversa rootDir
-  // test con opzione e diversa fileNamePrefix
-  // test con lettura iniziale (deve creare file e cartelle)
-  // test con stesso contenuto riletto (non deve creare nuovi file)
-  // test con contenuto modificto (deve creare niovi file e deve creare l'html)
+
+  it("Should not create two version of the same content if it didn't changed", async () => {
+    const list = {
+      url: "http://example.com/schema",
+      dir: "example-schema"
+    };
+    axiosMock.onGet(list.url).reply(200, schema1);
+
+    await runChecker(list);
+    await runChecker(list);
+
+    const files = fs.readdirSync(`${constants.ROOT_DIR}/${list.dir}`);
+    expect(files).toHaveLength(1);
+  });
+
+  it("Should throw an error if an item hasn't the mandatory settings", async () => {
+    let list = {
+      dir: "example-schema"
+      // missing url
+    };
+    expect(() => checker(list)).toThrow();
+
+    list = {
+      url: "http://example.com/schema"
+      // missing dir
+    };
+    expect(() => checker(list)).toThrow();
+  });
 });

@@ -22,6 +22,16 @@ const checkChanges = (list = [], { rootDir = constants.ROOT_DIR } = {}) => {
     list = [list];
   }
 
+  // mandatory input checks
+  list.forEach(({ url, dir }) => {
+    if (!url) {
+      throw new Error("Missing URL");
+    }
+    if (!dir) {
+      throw new Error("Missing directory");
+    }
+  });
+
   list.forEach(async ({ url, dir, fileNamePrefix = constants.FILE_NAME_PREFIX }) => {
     const containingDir = `${rootDir}/${dir}`;
 

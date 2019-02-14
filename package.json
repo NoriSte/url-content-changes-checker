@@ -12,7 +12,7 @@
   },
   "scripts": {
     "test": "jest",
-    "dev": "npx nodemon index.js"
+    "start": "npx nodemon index.js"
   },
   "nodemonConfig": {
     "ignore": [

@@ -27,7 +27,8 @@ const checkChanges = (list = [], { rootDir = constants.ROOT_DIR } = {}) => {
 
     // creates the dir if not exists
     // @see https://stackoverflow.com/a/48436466/700707
-    !fs.existsSync(containingDir) && fs.mkcontainingDirSync(dir);
+    !fs.existsSync(rootDir) && fs.mkdirSync(rootDir);
+    !fs.existsSync(containingDir) && fs.mkdirSync(containingDir);
 
     // reads all the previous saved files...
     let files = fs

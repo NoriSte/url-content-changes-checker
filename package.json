@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.16.0",
-    "jest": "^24.1.0"
+    "jest": "^24.1.0",
+    "timeout-as-promise": "^1.0.0"
   }
 }

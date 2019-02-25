@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/NoriSte/url-content-changes-checker/badge.svg?branch=feature%2Fcoveralls)](https://coveralls.io/github/NoriSte/url-content-changes-checker?branch=feature%2Fcoveralls)
+
 - [url-content-changes-checker](#url-content-changes-checker)
 - [What it does](#what-it-does)
 - [Example](#example)

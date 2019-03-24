@@ -3,8 +3,6 @@ node_js:
   - "8"
   - "node"
 
-script: echo "Running tests against $(node -v)..."
-
 jobs:
   include:
     - stage: Produce Coverage

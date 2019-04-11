@@ -76,8 +76,16 @@ const checkChanges = (list = [], { rootDir = constants.ROOT_DIR } = {}) => {
           transformResponse: undefined
         });
       }
+
+      let newContent;
       // scrapes the content
-      const newContent = (await readerPromise).data;
+      try {
+        newContent = (await readerPromise).data;
+      } catch(e) {
+        console.log(`${url} error`);
+        console.log(e.stack);
+        return;
+      }
 
       const newFileName = `${rootDir}/${dir}/${fileNamePrefix}-${Date.now()}`;
 

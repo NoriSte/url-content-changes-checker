@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/NoriSte/url-content-changes-checker.svg?branch=master)](https://travis-ci.com/NoriSte/url-content-changes-checker)
+[![Build Cron](https://img.shields.io/badge/build%20cron-weekly-44cc11.svg)](https://travis-ci.com/NoriSte/url-content-changes-checker)
 [![Coverage Status](https://coveralls.io/repos/github/NoriSte/url-content-changes-checker/badge.svg?branch=feature%2Fcoveralls)](https://coveralls.io/github/NoriSte/url-content-changes-checker?branch=feature%2Fcoveralls)
 
 - [url-content-changes-checker](#url-content-changes-checker)
@@ -7,6 +8,7 @@
 - [Options](#options)
 - [Why](#why)
 - [Notes](#notes)
+  - [Contributors](#contributors)
 
 # url-content-changes-checker
 

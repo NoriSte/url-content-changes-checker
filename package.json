@@ -22,7 +22,7 @@
     ]
   },
   "devDependencies": {
-    "axios-mock-adapter": "1.16.0",
+    "axios-mock-adapter": "1.17.0",
     "coveralls": "3.0.4",
     "jest": "24.8.0",
     "rimraf": "2.6.3",

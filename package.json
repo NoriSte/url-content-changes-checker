@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "axios-mock-adapter": "1.17.0",
-    "coveralls": "3.0.6",
+    "coveralls": "3.0.7",
     "jest": "24.9.0",
     "rimraf": "3.0.0",
     "timeout-as-promise": "1.0.0"
